@@ -20,9 +20,12 @@ from pydub.playback import play
 import pygame
 import elevenlabs
 elevenlabs.set_api_key("2adca02be8233d841cff320df4e5af3e")
+from decouple import config
 pygame.init()
-pygame.mixer.init()
 
+
+API_KEY = config('API_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
 def index(request):
    
     return render(request, 'index.html')
@@ -32,7 +35,7 @@ def open_file(filepath):
     with open(file_path, 'r', encoding='utf-8') as infile:
         return infile.read()
 
-api_key = open_file('openaiapikey2.txt')
+api_key = API_KEY
 elapikey = open_file('elabapikey.txt')
 
 conversation1 = []  
@@ -55,12 +58,14 @@ def chatgpt(api_key, conversation, chatbot, user_input, temperature=0.9, frequen
     conversation.append({"role": "assistant", "content": chat_response})
     return chat_response
 
-str_transcription=""     
+str_transcription=""    
+
 def your_view_name(request,duration=4, fs=44100):
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         while True:
+            print("Available Devices :: ",sd.query_devices(),"\n")
             print('Recording...')
-            myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=2)
+            myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=2, device='hw:0,0')
             sd.wait()
             print('Recording complete.')
             filename = 'myrecording.wav'
@@ -78,10 +83,7 @@ def your_view_name(request,duration=4, fs=44100):
             voice="Bella"
             )
             elevenlabs.play(audio)  
-            data = {
-                    "transcription": str_transcription,
-                }
-            return JsonResponse(data)
+           
  
     else:
         return render(request, 'index.html')

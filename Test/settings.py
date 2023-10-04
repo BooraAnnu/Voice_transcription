@@ -11,10 +11,17 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+
+import os
+
+# ENV_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), '.env'))
+config = config("API_KEY")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -25,8 +32,7 @@ SECRET_KEY = 'django-insecure-_=$+!tp8yb+d0jth#(iv5@vy5=a4e_**u-5)3l0^ken0kzy0*^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
